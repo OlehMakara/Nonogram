@@ -17,6 +17,7 @@ public:
     explicit WorkingField(const int rows, const int columns, const int cellSize, QWidget *parent = nullptr);
     ~WorkingField();
     CellButton* **getCellsMatrix();
+    int** getCheckedCellsMatrixFromUpToDown();
 
 signals:
     void workingFieldChanged();

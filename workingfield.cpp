@@ -15,7 +15,7 @@ WorkingField::WorkingField(const int rows, const int columns, const int cellSize
     rows(rows), columns(columns), cellSize(cellSize),
     ui(new Ui::WorkingField)
 {
-//    ui->setupUi(this);
+    //    ui->setupUi(this);
     this->setStyleSheet("background-color: rgb(255, 0, 0);");
 
     QGridLayout* gridLayout = new QGridLayout(this);
@@ -68,6 +68,11 @@ CellButton*** WorkingField::getCellsMatrix()
     return cellsMatrix;
 }
 
+int **WorkingField::getCheckedCellsMatrixFromUpToDown()
+{
+    return checkedCellsMatrixFromUpToDown;
+}
+
 void WorkingField::onCellButtonClicked()
 {
     this->countCheckedCells();
@@ -78,6 +83,7 @@ void WorkingField::countCheckedCells()
 {
     int checkedCellCount;
     int rowCount;
+    int rowsOfCheckedCellsMatrixFromUpToDown = rows/2 + rows%2;
     int columnCount;
     for (int yi = 0; yi < columns; ++yi) {
         checkedCellCount = 0;
@@ -87,28 +93,31 @@ void WorkingField::countCheckedCells()
             {
                 ++checkedCellCount;
             }
-            else if (checkedCellCount > 0)
+            else //
             {
                 checkedCellsMatrixFromUpToDown[rowCount][yi] = checkedCellCount;
-                checkedCellCount = 0;
-                ++rowCount;
-                std::cout << rowCount << std::endl;
+                if (checkedCellCount > 0)
+                {
+                    ++rowCount;
+                    checkedCellCount = 0;
+                    std::cout << rowCount << std::endl;
+                }
             }
         }
-        if (rowCount < 5)
+
+        for (int i = rowCount; i < rowsOfCheckedCellsMatrixFromUpToDown; ++i) {
+            checkedCellsMatrixFromUpToDown[i][yi] = 0;
+        }
+
+        if (rowCount < rowsOfCheckedCellsMatrixFromUpToDown)
             checkedCellsMatrixFromUpToDown[rowCount][yi] = checkedCellCount;
-        else
-            checkedCellsMatrixFromUpToDown[rowCount-1][yi] = checkedCellCount;
     }
 
-    //TODO fix
     for (int xi = 0; xi < rows/2 + rows%2; ++xi) {
         for (int yi = 0; yi < columns; ++yi) {
             std::cout << checkedCellsMatrixFromUpToDown[xi][yi] << "  ";
         }
         std::cout << std::endl;
     }
-
-
 
 }
