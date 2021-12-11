@@ -3,6 +3,8 @@
 
 #include <QWidget>
 
+#include "nonogramimage.h"
+
 class CellButton;
 
 namespace Ui {
@@ -16,9 +18,12 @@ class WorkingField : public QWidget
 public:
     explicit WorkingField(const int rowsOfNonogram, const int columnsOfNonogram, const int cellSize, QWidget *parent = nullptr);
     ~WorkingField();
-    CellButton* **getCellsMatrix();
+//    CellButton* **getCellsMatrix();
+
     int** getHorizontalCheckedCellsMatrix();
     int** getVerticalCheckedCellsMatrix();
+    NonogramImage* getNonogramImage();
+
 
 signals:
     void workingFieldChanged();

@@ -3,6 +3,9 @@
 
 #include <QMainWindow>
 
+#include "workingfield.h"
+#include "idbmanager.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -15,7 +18,13 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+public slots:
+    void openNonogramImage();
+    void saveNonogramImage();
+
 private:
+    IDBManager *dbManager;
+    WorkingField* workingField;
     Ui::MainWindow *ui;
 };
 #endif // MAINWINDOW_H

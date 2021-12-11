@@ -44,12 +44,14 @@ WorkingField::WorkingField(const int rows, const int columns, const int cellSize
 void WorkingField::createCheckedCellsMatrixs()
 {
     checkedCellsMatrixFromUpToDown = new int* [rowsOfCheckedCellsMatrix];
-    for (int i = 0; i < rowsOfCheckedCellsMatrix; ++i) {
+    for (int i = 0; i < rowsOfCheckedCellsMatrix; ++i)
+    {
         checkedCellsMatrixFromUpToDown[i] = new int[columnsOfNonogram];
     }
 
     checkedCellsMatrixFromLeftToRight = new int* [rowsOfNonogram];
-    for (int i = 0; i < rowsOfNonogram; ++i) {
+    for (int i = 0; i < rowsOfNonogram; ++i)
+    {
         checkedCellsMatrixFromLeftToRight[i] = new int[columnsOfCheckedCellsMatrix];
     }
 }
@@ -59,12 +61,12 @@ WorkingField::~WorkingField()
     delete ui;
 }
 
-CellButton*** WorkingField::getCellsMatrix()
-{
-    return cellsMatrix;
-}
+//CellButton*** WorkingField::getCellsMatrix()
+//{
+//    return cellsMatrix;
+//}
 
-int **WorkingField::getHorizontalCheckedCellsMatrix()
+int** WorkingField::getHorizontalCheckedCellsMatrix()
 {
     return checkedCellsMatrixFromUpToDown;
 }
@@ -72,6 +74,28 @@ int **WorkingField::getHorizontalCheckedCellsMatrix()
 int** WorkingField::getVerticalCheckedCellsMatrix()
 {
     return checkedCellsMatrixFromLeftToRight;
+}
+
+NonogramImage *WorkingField::getNonogramImage()
+{
+//    bool** matrix = new bool*[rowsOfNonogram];
+//    for (int xi = 0; xi < rowsOfNonogram; ++xi)
+//    {
+//        matrix[xi] = new bool[columnsOfNonogram];
+//        for (int yi = 0; yi < columnsOfNonogram; ++yi)
+//        {
+//            matrix[xi][yi] = cellsMatrix[xi][yi]->isChecked();
+//        }
+//    }
+
+        QBitArray bitArray(rowsOfNonogram * columnsOfNonogram);
+        for (int xi = 0; xi < rowsOfNonogram; ++xi)
+            for (int yi = 0; yi < columnsOfNonogram; ++yi)
+                if (cellsMatrix[xi][yi]->isChecked())
+                    bitArray.setBit(xi*columnsOfNonogram + yi);
+
+    NonogramImage* nonogramImage = new NonogramImage(0, "none", rowsOfNonogram, columnsOfNonogram, bitArray);  //TODO name
+    return nonogramImage;
 }
 
 void WorkingField::onCellButtonClicked()
@@ -144,7 +168,6 @@ void WorkingField::determineCheckedCellsMatrixFromLeftToRight()
                     checkedCellsMatrixFromLeftToRight[xi][columnCount] = checkedCellCount;
                     --columnCount;
                     checkedCellCount = 0;
-                    std::cout << columnCount << std::endl;
                 }
             }
         }
