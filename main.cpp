@@ -9,8 +9,5 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
-//    CellButton cell;
-//    cell.show();
-
     return a.exec();
 }

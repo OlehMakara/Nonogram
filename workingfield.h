@@ -14,23 +14,32 @@ class WorkingField : public QWidget
     Q_OBJECT
 
 public:
-    explicit WorkingField(const int rows, const int columns, const int cellSize, QWidget *parent = nullptr);
+    explicit WorkingField(const int rowsOfNonogram, const int columnsOfNonogram, const int cellSize, QWidget *parent = nullptr);
     ~WorkingField();
     CellButton* **getCellsMatrix();
-    int** getCheckedCellsMatrixFromUpToDown();
+    int** getHorizontalCheckedCellsMatrix();
+    int** getVerticalCheckedCellsMatrix();
 
 signals:
     void workingFieldChanged();
 
 private slots:
     void onCellButtonClicked();
-    void countCheckedCells();
-    void createCheckedCellsMatrixs();
+    void determineCheckedCells();
 
 private:
-    const int rows;
-    const int columns;
+    void createCheckedCellsMatrixs();
+    void determineCheckedCellsMatrixFromUpToDown();
+    void determineCheckedCellsMatrixFromLeftToRight();
+    void printCheckedCellsMatrices();
+
+
+private:
+    const int rowsOfNonogram;
+    const int columnsOfNonogram;
     const int cellSize;
+    const int rowsOfCheckedCellsMatrix;
+    const int columnsOfCheckedCellsMatrix;
     CellButton* **cellsMatrix;
     int **checkedCellsMatrixFromUpToDown;
     int **checkedCellsMatrixFromLeftToRight;

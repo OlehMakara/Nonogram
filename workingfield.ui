@@ -28,19 +28,6 @@ stop: 0 #dadbde, stop: 1 #f6f7fa);}</string>
      <property name="checkable">
       <bool>false</bool>
      </property>
-     <widget class="QPushButton" name="pushButton">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>180</y>
-        <width>787</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>PushButton</string>
-      </property>
-     </widget>
     </widget>
    </item>
   </layout>

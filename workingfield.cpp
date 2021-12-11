@@ -9,13 +9,12 @@
 
 #include <iostream>
 
-
 WorkingField::WorkingField(const int rows, const int columns, const int cellSize, QWidget *parent) :
     QWidget(parent),
-    rows(rows), columns(columns), cellSize(cellSize),
+    rowsOfNonogram(rows), columnsOfNonogram(columns), cellSize(cellSize),
+    rowsOfCheckedCellsMatrix(rows/2 + rows%2), columnsOfCheckedCellsMatrix(columns/2 + columns%2),
     ui(new Ui::WorkingField)
 {
-    //    ui->setupUi(this);
     this->setStyleSheet("background-color: rgb(255, 0, 0);");
 
     QGridLayout* gridLayout = new QGridLayout(this);
@@ -44,17 +43,14 @@ WorkingField::WorkingField(const int rows, const int columns, const int cellSize
 
 void WorkingField::createCheckedCellsMatrixs()
 {
-    checkedCellsMatrixFromUpToDown = new int* [rows/2 + rows%2];
-    for (int i = 0; i < rows/2 + rows%2; ++i) {
-        checkedCellsMatrixFromUpToDown[i] = new int[columns];
-        for (int j = 0; j < columns; ++j) {
-            checkedCellsMatrixFromUpToDown[i][j] = 0;
-        }
+    checkedCellsMatrixFromUpToDown = new int* [rowsOfCheckedCellsMatrix];
+    for (int i = 0; i < rowsOfCheckedCellsMatrix; ++i) {
+        checkedCellsMatrixFromUpToDown[i] = new int[columnsOfNonogram];
     }
 
-    checkedCellsMatrixFromLeftToRight = new int* [rows];
-    for (int i = 0; i < rows; ++i) {
-        checkedCellsMatrixFromLeftToRight[i] = new int[columns/2 + columns%2];
+    checkedCellsMatrixFromLeftToRight = new int* [rowsOfNonogram];
+    for (int i = 0; i < rowsOfNonogram; ++i) {
+        checkedCellsMatrixFromLeftToRight[i] = new int[columnsOfCheckedCellsMatrix];
     }
 }
 
@@ -68,56 +64,116 @@ CellButton*** WorkingField::getCellsMatrix()
     return cellsMatrix;
 }
 
-int **WorkingField::getCheckedCellsMatrixFromUpToDown()
+int **WorkingField::getHorizontalCheckedCellsMatrix()
 {
     return checkedCellsMatrixFromUpToDown;
 }
 
+int** WorkingField::getVerticalCheckedCellsMatrix()
+{
+    return checkedCellsMatrixFromLeftToRight;
+}
+
 void WorkingField::onCellButtonClicked()
 {
-    this->countCheckedCells();
+    this->determineCheckedCells();
     emit workingFieldChanged();
 }
 
-void WorkingField::countCheckedCells()
+void WorkingField::determineCheckedCells()
+{
+    this->determineCheckedCellsMatrixFromUpToDown();
+    this->determineCheckedCellsMatrixFromLeftToRight();
+#ifdef QT_DEBUG
+    this->printCheckedCellsMatrices();
+#endif
+}
+
+
+void WorkingField::determineCheckedCellsMatrixFromUpToDown()
 {
     int checkedCellCount;
     int rowCount;
-    int rowsOfCheckedCellsMatrixFromUpToDown = rows/2 + rows%2;
-    int columnCount;
-    for (int yi = 0; yi < columns; ++yi) {
+
+    for (int yi = 0; yi < columnsOfNonogram; ++yi) {
         checkedCellCount = 0;
-        rowCount = 0;
-        for (int xi = rows-1; xi >= 0; --xi) {
+        rowCount = rowsOfCheckedCellsMatrix-1;
+        for (int xi = rowsOfNonogram-1; xi >= 0; --xi) {
             if (cellsMatrix[xi][yi]->isChecked())
             {
                 ++checkedCellCount;
             }
-            else //
+            else
             {
                 checkedCellsMatrixFromUpToDown[rowCount][yi] = checkedCellCount;
                 if (checkedCellCount > 0)
                 {
-                    ++rowCount;
+                    --rowCount;
                     checkedCellCount = 0;
-                    std::cout << rowCount << std::endl;
                 }
             }
         }
 
-        for (int i = rowCount; i < rowsOfCheckedCellsMatrixFromUpToDown; ++i) {
+        for (int i = rowCount; i >= 0; --i) {
             checkedCellsMatrixFromUpToDown[i][yi] = 0;
         }
 
-        if (rowCount < rowsOfCheckedCellsMatrixFromUpToDown)
+        if (rowCount >= 0)
             checkedCellsMatrixFromUpToDown[rowCount][yi] = checkedCellCount;
     }
+}
 
-    for (int xi = 0; xi < rows/2 + rows%2; ++xi) {
-        for (int yi = 0; yi < columns; ++yi) {
+
+void WorkingField::determineCheckedCellsMatrixFromLeftToRight()
+{
+    int checkedCellCount;
+    int columnCount;
+
+    for (int xi = 0; xi < rowsOfNonogram; ++xi) {
+        checkedCellCount = 0;
+        columnCount = columnsOfCheckedCellsMatrix-1;
+        for (int yi = columnsOfNonogram-1; yi >= 0; --yi) {
+            if (cellsMatrix[xi][yi]->isChecked())
+            {
+                ++checkedCellCount;
+            }
+            else
+            {
+                if (checkedCellCount > 0)
+                {
+                    checkedCellsMatrixFromLeftToRight[xi][columnCount] = checkedCellCount;
+                    --columnCount;
+                    checkedCellCount = 0;
+                    std::cout << columnCount << std::endl;
+                }
+            }
+        }
+
+        for (int i = columnCount; i >= 0; --i) {
+            checkedCellsMatrixFromLeftToRight[xi][i] = 0;
+        }
+
+        if (columnCount >= 0)
+            checkedCellsMatrixFromLeftToRight[xi][columnCount] = checkedCellCount;
+    }
+}
+
+
+void WorkingField::printCheckedCellsMatrices()
+{
+    for (int xi = 0; xi < rowsOfCheckedCellsMatrix; ++xi) {
+        for (int yi = 0; yi < columnsOfNonogram; ++yi) {
             std::cout << checkedCellsMatrixFromUpToDown[xi][yi] << "  ";
         }
         std::cout << std::endl;
     }
+    std::cout << "-------------------------------------------" << std::endl;
+    for (int xi = 0; xi < rowsOfNonogram; ++xi) {
+        for (int yi = 0; yi < columnsOfCheckedCellsMatrix; ++yi) {
+            std::cout << checkedCellsMatrixFromLeftToRight[xi][yi] << "  ";
+        }
+        std::cout << std::endl;
+    }
+    std::cout << "||||||||||||||||||||||||||||||||||||||||||" << std::endl;
 
 }

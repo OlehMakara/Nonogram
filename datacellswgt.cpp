@@ -1,26 +1,21 @@
 #include "datacellswgt.h"
 
-#include "celldata.h"
 #include "workingfield.h"
 #include "cellbutton.h"
 
 #include <QGridLayout>
 
-DataCellsWgt::DataCellsWgt(const int rows, const int columns, const int cellSize, QWidget *parent) : QWidget(parent),
-    rows(rows), columns(columns), cellSize(cellSize)
+DataCellsWgt::DataCellsWgt(const int rows, const int columns, const int cellSize, int **checkedCellsMatrix, QWidget *parent) : QWidget(parent),
+    rows(rows), columns(columns), cellSize(cellSize), checkedCellsMatrix(checkedCellsMatrix)
 {
     QGridLayout* gridLayout = new QGridLayout(this);
     gridLayout->setSpacing(1);
     gridLayout->setSizeConstraint(QLayout::SetMinimumSize);
     setLayout(gridLayout);
 
-//    const int x = 10;
-//    const int y = 10;
-//    int cellSize = 20;
-
-    CellData* cellsMatrix [rows][columns];
-
+    cellsMatrix = new CellData** [rows];
     for (int xi = 0; xi < rows; ++xi) {
+        cellsMatrix[xi] = new CellData* [columns];
         for (int yi = 0; yi < columns; ++yi) {
             CellData* celldata = new CellData(this, cellSize);
             gridLayout->addWidget(celldata, xi, yi);
@@ -34,14 +29,12 @@ DataCellsWgt::DataCellsWgt(const int rows, const int columns, const int cellSize
 
 void DataCellsWgt::onWorkingFieldChanged()
 {
-//    WorkingField* workingField = qobject_cast<WorkingField*>(sender());
-//    if (workingField != nullptr)
-//    {
-//        auto cellMatrix = workingField->getCellsMatrix();
-//        for (auto vector : cellMatrix) {
-//            for (auto cell : vector) {
-
-//            }
-//        }
-//    }
+    for (int xi = 0; xi < rows; ++xi) {
+        for (int yi = 0; yi < columns; ++yi) {
+            if (checkedCellsMatrix[xi][yi] > 0)
+                cellsMatrix[xi][yi]->setText(QString::number(checkedCellsMatrix[xi][yi]));
+            else
+                cellsMatrix[xi][yi]->setText("");
+        }
+    }
 }
