@@ -16,6 +16,11 @@ int NonogramImage::getId()
     return id;
 }
 
+QString NonogramImage::getName()
+{
+    return name;
+}
+
 int NonogramImage::getRowsAmount()
 {
     return rowsAmount;

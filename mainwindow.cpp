@@ -7,6 +7,7 @@
 
 #include <QGridLayout>
 #include <QPushButton>
+#include <QTextEdit>
 #include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -22,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
     gridLayout->setSizeConstraint(QLayout::SetMinimumSize);
 
     const int rows = 10;
-    const int columns = 15;
+    const int columns = 10;
     const int cellSize = 20;
 
     workingField = new WorkingField(rows, columns, cellSize, this);
@@ -40,9 +41,17 @@ MainWindow::MainWindow(QWidget *parent)
     connect(workingField, &WorkingField::workingFieldChanged, verticalDataCells, &DataCellsWgt::onWorkingFieldChanged);
 
 
-    QPushButton *pb = new QPushButton(this);
-    gridLayout->addWidget(pb, 0, 0);
-    connect(pb,&QPushButton::clicked, this,&MainWindow::saveNonogramImage);
+    QPushButton *pbSave = new QPushButton("Save", this);
+    gridLayout->addWidget(pbSave, 3, 2);
+    connect(pbSave,&QPushButton::clicked, this,&MainWindow::saveNonogramImage);
+
+    QPushButton *pbOpen = new QPushButton("Open",this);
+    gridLayout->addWidget(pbOpen, 3, 3);
+    connect(pbOpen,&QPushButton::clicked, this,&MainWindow::openNonogramImage);
+
+    number = new QLineEdit(this);
+    gridLayout->addWidget(number, 2, 3);
+
 }
 
 MainWindow::~MainWindow()
@@ -54,17 +63,22 @@ void MainWindow::saveNonogramImage()
 {
     qDebug() << workingField->getNonogramImage()->getMatrix();
     dbManager->save(workingField->getNonogramImage());
-//    bool** matrix = workingField->getNonogramImage()->getMatrix();
-//    for (int xi = 0; xi < 10; ++xi)
-//    {
-//        for (int yi = 0; yi < 15; ++yi)
-//        {
-//            std::cout << matrix[xi][yi];
-//        }
-//    }
+    //    bool** matrix = workingField->getNonogramImage()->getMatrix();
+    //    for (int xi = 0; xi < 10; ++xi)
+    //    {
+    //        for (int yi = 0; yi < 15; ++yi)
+    //        {
+    //            std::cout << matrix[xi][yi];
+    //        }
+    //    }
 }
 
 void MainWindow::openNonogramImage()
 {
-
+    NonogramImage* nono = dbManager->load(number->text().toInt());
+    qDebug() << nono->getId();
+    qDebug() << nono->getName();
+    qDebug() << nono->getRowsAmount();
+    qDebug() << nono->getColumnsAmount();
+    qDebug() << nono->getMatrix();
 }

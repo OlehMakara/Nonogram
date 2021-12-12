@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QLineEdit>
 
 #include "workingfield.h"
 #include "idbmanager.h"
@@ -23,6 +24,8 @@ public slots:
     void saveNonogramImage();
 
 private:
+    QLineEdit *number;
+
     IDBManager *dbManager;
     WorkingField* workingField;
     Ui::MainWindow *ui;

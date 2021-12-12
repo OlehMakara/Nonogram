@@ -12,6 +12,8 @@ public:
     virtual void connectToDataBase() = 0;
     virtual QSqlDatabase getDB() = 0;
     virtual bool save(NonogramImage* nonogramImage) = 0;
+    virtual NonogramImage* load(int id) = 0;
+
 };
 
 #endif // DBMANAGER_H

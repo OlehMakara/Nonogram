@@ -22,6 +22,7 @@ public:
     void connectToDataBase();
     QSqlDatabase getDB();
     bool save(NonogramImage* nonogramImage);
+    virtual NonogramImage* load(int id);
 
 private:
     // Сам об'єкт бази даних, з яким буде виконуватись робота
@@ -30,6 +31,10 @@ private:
 private:
     static SqliteDBManager* instance;
     SqliteDBManager();
+
+
+    QBitArray StringToBits(const QString &str) const;
+    QString bitsToString(const QBitArray &bits) const;
 
     /* Внутрішні методи для роботи з базою даних
      * */
